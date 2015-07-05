@@ -14,6 +14,22 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class BrotherContactsExtension extends Extension
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        // get all Bundles
+        $bundles = $container->getParameter('kernel.bundles');
+        $brotherConfig = array();
+
+        // get the BrotherContacts configuration
+        $configs = $container->getExtensionConfig($this->getAlias());
+        $contactsConfig = $this->processConfiguration(new Configuration(), $configs);
+        $container->prependExtensionConfig('brother_contacts', $brotherConfig);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -24,5 +40,22 @@ class BrotherContactsExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        if (empty($config['db_driver']) || !in_array(strtolower($config['db_driver']), array('mongodb', 'orm'))) {
+            throw new \InvalidArgumentException(sprintf('Invalid db driver "%s".', $config['db_driver']));
+        }
+        $loader->load(sprintf('%s.yml', $config['db_driver']));
+
+        // set model class
+        if (isset($config['class']['model'])) {
+            $container->setParameter('brother_contacts.model.entry.class', $config['class']['model']);
+        }
+
+        // set manager class
+        if (isset($config['class']['manager'])) {
+            $container->setParameter('brother_contacts.manager.entry.class', $config['class']['manager']);
+        }
+
+
     }
 }

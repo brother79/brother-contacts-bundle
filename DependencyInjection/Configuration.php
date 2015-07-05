@@ -20,10 +20,19 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('brother_contacts');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $treeBuilder->root('brother_contacts')
+            ->children()
+                ->scalarNode('db_driver')->defaultValue('orm')->end()
 
+                ->arrayNode('class')->addDefaultsIfNotSet()
+					->children()
+						->scalarNode('model')->cannotBeEmpty()->end()
+						->scalarNode('manager')->cannotBeEmpty()->end()
+                    ->end()
+                ->end()	
+
+            ->end()
+        ->end();
         return $treeBuilder;
     }
 }

@@ -1,3 +1,0 @@
-brother_contacts_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: BrotherContactsBundle:Default:index }
