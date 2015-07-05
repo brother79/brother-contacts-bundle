@@ -2,6 +2,7 @@
 
 namespace Brother\ContactsBundle\Entity;
 
+use Brother\CommonBundle\Model\Entry\EntryInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -191,5 +192,13 @@ class Entry implements EntryInterface
     public function getDeletedAt()
     {
         return $this->deleted_at;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }
